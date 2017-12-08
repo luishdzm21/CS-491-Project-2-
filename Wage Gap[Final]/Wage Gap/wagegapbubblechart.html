@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Wage Gap Bubble Chart</title>
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+<style type="text/css">
+
+text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight:bold;
+}
+div.bubble {
+  position: relative;
+  left: 0px;  /* stick it wherever it was positioned by default */
+  top: 0px;
+
+}
+div.info {
+  position: absolute;
+  left: 2400px;
+  top: 10px;
+  float: right;
+
+}
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 140px;
+    padding: 2px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+h2{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 35px;
+  line-height: 40px;
+  margin: 60px 0px -200px 50px;
+}
+h3{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 16px;
+  margin: 210px 800px -250px 50px;
+}
+p{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  position: absolute;
+  top: 250px;
+  left:60px;
+}
+
+</style>
+<body>
+  <div class="bubble">
+  <h2>Women's Salary as a Percentage<br> Compared to Men in the Same Field</h2>
+  <h3>This chart represents data of how much less or more women make than men in the same fields.
+     The blue circles represent fields where men on average make more
+    than women, the red represents fields where women make more than men. The circumference of
+    the circles are determined by the size of the gap between male and female wages.</h3>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+</div>
+<div>
+<p><a href="wagegapbarchart.html">Chart 2</a></p>
+</div>
+
+
+
+
+<script>
+
+
+var formatTime = d3.time.format("%e %B");
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+var width = 1500,
+    height = 1600,
+    padding = 1.5, // separation between same-color nodes
+    clusterPadding = 6, // separation between different-color nodes
+    maxRadius = 12;
+
+var color = d3.scale.ordinal()
+      .range(["#FFFFFF", "#E4002B"]);
+
+
+
+d3.text("word_groups.csv", function(error, text) {
+  if (error) throw error;
+  var colNames = "text,size,group,percent,title,ws,ms\n" + text;
+  var data = d3.csv.parse(colNames);
+
+  data.forEach(function(d) {
+    d.size = +d.size;
+  });
+
+
+//unique cluster/group id's
+var cs = [];
+data.forEach(function(d){
+        if(!cs.contains(d.group)) {
+            cs.push(d.group);
+        }
+});
+
+var n = data.length, // total number of nodes
+    m = cs.length; // number of distinct clusters
+
+//create clusters and nodes
+var clusters = new Array(m);
+var nodes = [];
+for (var i = 0; i<n; i++){
+    nodes.push(create_nodes(data,i));
+}
+
+var force = d3.layout.force()
+    .nodes(nodes)
+    .size([width, height])
+    .gravity(.02)
+    .charge(0)
+    .on("tick", tick)
+    .start();
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+
+var node = svg.selectAll("circle")
+    .data(nodes)
+    .enter().append("g").call(force.drag);
+
+
+  node.append("circle")
+  .attr("stroke-width", function(d){if(d.group==2){return 1;}else{return 3;}})
+ .attr("stroke", "#0288b5")
+      .style("fill", function (d) {
+      return color(d.cluster);
+      })
+      .attr("r", function(d){return d.radius})
+      .on("mouseover", function(d) {
+        d3.select(this).transition()
+
+        .attr("r", function(d){return (d.radius+10)})
+        .attr("stroke", "black");
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div .html( "<b>Job Title:</b> "+d.title + "<br/>"  + "<b>Men's Salary:</b> $"+d.ms+"<br/>"+"<b>Women's Salary:</b> $"+d.ws)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            })
+        .on("mouseout", function(d) {
+          d3.select(this).transition()
+        .attr("r", function(d){return d.radius})
+          .attr("stroke", "#0288b5");
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
+
+
+
+
+
+node.append("text")
+      .attr("dy", ".3em")
+      .style("text-anchor", "middle")
+      .attr("font-family", "Montserrat, sans-serif")
+      .attr("font-size","12px")
+      .text(function(d) { return d.text.substring(0, d.radius / 3); });
+
+
+
+
+function create_nodes(data,node_counter) {
+  var i = cs.indexOf(data[node_counter].group),
+      r = Math.sqrt((i + 1) / m * -Math.log(Math.random())) * maxRadius,
+      d = {
+        cluster: i,
+        radius: data[node_counter].size*1.5,
+        text: data[node_counter].text+"%",
+        title: data[node_counter].title,
+        ws: data[node_counter].ws,
+        ms: data[node_counter].ms,
+        group: data[node_counter].group,
+        x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
+        y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
+      };
+  if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
+  return d;
+};
+
+
+
+function tick(e) {
+    node.each(cluster(10 * e.alpha * e.alpha))
+        .each(collide(.5))
+    .attr("transform", function (d) {
+        var k = "translate(" + d.x + "," + d.y + ")";
+        return k;
+    })
+
+}
+
+// Move d to be adjacent to the cluster node.
+function cluster(alpha) {
+    return function (d) {
+        var cluster = clusters[d.cluster];
+        if (cluster === d) return;
+        var x = d.x - cluster.x,
+            y = d.y - cluster.y,
+            l = Math.sqrt(x * x + y * y),
+            r = d.radius + cluster.radius;
+        if (l != r) {
+            l = (l - r) / l * alpha;
+            d.x -= x *= l;
+            d.y -= y *= l;
+            cluster.x += x;
+            cluster.y += y;
+        }
+    };
+}
+
+
+
+// Resolves collisions between d and all other circles.
+function collide(alpha) {
+    var quadtree = d3.geom.quadtree(nodes);
+    return function (d) {
+        var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+            nx1 = d.x - r,
+            nx2 = d.x + r,
+            ny1 = d.y - r,
+            ny2 = d.y + r;
+        quadtree.visit(function (quad, x1, y1, x2, y2) {
+            if (quad.point && (quad.point !== d)) {
+                var x = d.x - quad.point.x,
+                    y = d.y - quad.point.y,
+                    l = Math.sqrt(x * x + y * y),
+                    r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+                if (l < r) {
+                    l = (l - r) / l * alpha;
+                    d.x -= x *= l;
+                    d.y -= y *= l;
+                    quad.point.x += x;
+                    quad.point.y += y;
+                }
+            }
+            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+        });
+    };
+}
+});
+
+Array.prototype.contains = function(v) {
+    for(var i = 0; i < this.length; i++) {
+        if(this[i] === v) return true;
+    }
+    return false;
+};
+
+</script>

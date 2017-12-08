@@ -1,0 +1,125 @@
+{
+   "pay_ratios_2015_16":[
+      {
+         "name":"Legal Ocupations",
+         "max":1765,
+         "min":1001,
+         "median":1271
+      },
+      {
+         "name":"Physicians/Surgeons",
+         "max":2002,
+         "min":1246,
+         "median":1661
+      },
+      {
+         "name":"Chief Executives",
+         "max":2246,
+         "min":1572,
+         "median":2023
+      },
+      {
+         "name":"Bartenders",
+         "max":634,
+         "min":459,
+         "median":522
+      },
+      {
+         "name":"Human Resources Workers",
+         "max":1257,
+         "min":912,
+         "median":962
+      },
+      {
+         "name":"Social Workers",
+         "max":892,
+         "min":839,
+         "median":844
+      },
+      {
+         "name":"Designers",
+         "max":1020,
+         "min":812,
+         "median":921
+      },
+      {
+         "name":"Web Developers",
+         "max":1248,
+         "min":988,
+         "median":1129
+      },
+      {
+         "name":"Sales/Office Occupation",
+         "max":766,
+         "min":620,
+         "median":666
+      },
+      {
+         "name":"Receptionists/Information Clerks",
+         "max":616,
+         "min":532,
+         "median":540
+      },
+      {
+         "name":"Management/Business/Finance",
+         "max":1416,
+         "min":1056,
+         "median":1227
+      },
+      {
+         "name":"Farming/Fishing/Forestry ",
+         "max":457,
+         "min":375,
+         "median":429
+      },
+      {
+         "name":"Accountants/Auditors",
+         "max":1236,
+         "min":999,
+         "median":1072
+      },
+      {
+         "name":"Architecture/Engineering",
+         "max":1413,
+         "min":1158,
+         "median":1377
+      },
+      {
+         "name":"Physical Therapists",
+         "max":1478,
+         "min":1307,
+         "median":1387
+      },
+      {
+        "name":"Personal Financial Advisor",
+         "max":1637,
+         "min":1004,
+         "median":1337
+       },
+       {
+         "name":"Police/Sheriff Patrol Officers",
+          "max":1043,
+          "min":743,
+          "median":1018
+        },
+        {
+          "name":"Elementary/Middle School Teachers",
+           "max":1096,
+           "min":956,
+           "median":980
+         },
+         {
+           "name":"Insurance Sales Agent",
+            "max":946,
+            "min":698,
+            "median":765
+          },
+          {
+            "name":"Entertainment/Sports/Media",
+             "max":1024,
+             "min":870,
+             "median":956
+           }
+
+   ]
+}

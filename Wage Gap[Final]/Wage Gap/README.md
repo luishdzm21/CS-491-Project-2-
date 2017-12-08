@@ -1,0 +1,2 @@
+In order to start the project, you open the “wagegapbubblechart.html” file. From there you can interact with the first chart. You can hover over the circles to see the data. Then to go to the second chart you press on the link named “Chart 2”. Once there you can change the way it is sorted with the drop-down list. Also, hover over the dots to reveal the data. Furthermore, you can click on the “Show Line On Hover” to make a line appear when hovering through the dots which will allow you to compare the salary with other jobs.
+
